@@ -46,7 +46,7 @@ def xi_grid(shape='quad', res=[8, 8], units='div', method='fit'):
         
         XiT = numpy.zeros([NPT,2])
         TT = numpy.zeros((NTT, 3), dtype='uint32')
-        NodesPerLine = range(divs[0], 0, -1)
+        NodesPerLine = list(range(divs[0], 0, -1))
         np = 0
         for row in range(nx):
             for col in range(nx-row):

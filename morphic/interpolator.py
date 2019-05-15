@@ -172,12 +172,12 @@ def _get_basis_functions(basis, deriv):
     basis_functions = []
     for ind, bs in enumerate(basis):
         if bs[0] == 'T':
-            if bs in bsfn_list.keys():
+            if bs in list(bsfn_list.keys()):
                 basis_functions.append([bsfn_list[bs][di[ind]],
                     [dimensions, dimensions + 1]])
             dimensions += 2
         else:
-            if bs in bsfn_list.keys():
+            if bs in list(bsfn_list.keys()):
                 basis_functions.append([bsfn_list[bs][di[ind]],
                     [dimensions]])
             dimensions += 1

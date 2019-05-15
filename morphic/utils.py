@@ -93,7 +93,7 @@ class PCAMesh(object):
             x[:, :, 1:] = self.components[idx:idx+nsize,:].reshape(pca_node_shape) # mode values
             return x
         else:
-            print 'Cannot reshape this node when genrating pca mesh'
+            print('Cannot reshape this node when genrating pca mesh')
 
 
 def grid(divs=10, dims=2):
@@ -155,7 +155,7 @@ def convert_hermite_lagrange(cHmesh, tol=1e-9):
         tree = cKDTree(X)
         dims = element_dimensions(element.basis)
         if dims == 1:
-            print "1D element conversion unchecked"
+            print("1D element conversion unchecked")
             Xg = element.evaluate(Xi1d)
             for xg in Xg:
                 r, index = tree.query(xg.tolist())
@@ -169,7 +169,7 @@ def convert_hermite_lagrange(cHmesh, tol=1e-9):
             eid += 1
             mesh.add_element(eid, ['L3'], element_nodes)
         elif dims == 2:
-            print "2D element conversion unchecked"
+            print("2D element conversion unchecked")
             Xg = element.evaluate(Xi2d)
             for xg in Xg:
                 r, index = tree.query(xg.tolist())

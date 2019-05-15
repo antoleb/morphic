@@ -1,7 +1,7 @@
 """
 This module manages the low level parameters describing the mesh.
 """
-import interpolator
+from . import interpolator
 import string
 import random
 import numpy
@@ -109,10 +109,10 @@ class ObjectList:
     
     @property
     def ids(self):
-        return self._object_ids.keys()
+        return list(self._object_ids.keys())
 
     def keys(self):
-        return self._object_ids.keys()
+        return list(self._object_ids.keys())
     
     def add(self, obj, group=None):
         """
@@ -135,10 +135,10 @@ class ObjectList:
         return oid
 
     def remove(self, obj):
-        for key in self.groups.keys():
+        for key in list(self.groups.keys()):
             if obj in self.groups[key]:
                 self.groups[key].remove(obj)
-        if obj.id in self._object_ids.keys():
+        if obj.id in list(self._object_ids.keys()):
             self._object_ids.pop(obj.id)
         if obj in self._objects:
             self._objects.remove(obj)
@@ -162,7 +162,7 @@ class ObjectList:
         self._id_counter = value
         
     def get_unique_id(self, random_chars=0):
-        existing_ids = self._object_ids.keys()
+        existing_ids = list(self._object_ids.keys())
         if random_chars > 0:
             random_id = existing_ids[0]
             while random_id in existing_ids:
@@ -186,7 +186,7 @@ class ObjectList:
             group_list = group
         for uid in uids:
             for group in group_list:
-                if group not in self.groups.keys():
+                if group not in list(self.groups.keys()):
                     self.groups[group] = []
                 obj = self._object_ids[uid]
                 if obj not in self.groups[group]:
@@ -199,7 +199,7 @@ class ObjectList:
         self.groups = {}
     
     def _get_group(self, group):
-        if group in self.groups.keys():
+        if group in list(self.groups.keys()):
             return self.groups[group]
         else:
             return []
@@ -215,7 +215,7 @@ class ObjectList:
     def _save_dict(self):
         objlist_dict = {}
         objlist_dict['groups'] = {}
-        for key in self.groups.keys():
+        for key in list(self.groups.keys()):
             ids = []
             for obj in self.groups[key]:
                 ids.append(obj.id)
@@ -224,11 +224,11 @@ class ObjectList:
     
     def _load_dict(self, objlist_dict):
         self.groups = {}
-        for group in objlist_dict['groups'].keys():
+        for group in list(objlist_dict['groups'].keys()):
             self.add_to_group(objlist_dict['groups'][group], group)
     
     def __contains__(self, item):
-        return item in self._object_ids.keys()
+        return item in list(self._object_ids.keys())
 
     def __getitem__(self, keys):
         if isinstance(keys, list):
@@ -276,7 +276,7 @@ class Core(object):
         i0 = self.P.size
         self.P = numpy.append(self.P, params)
         self.fixed = numpy.append(self.fixed, [False for p in params])
-        return range(i0, self.P.size)
+        return list(range(i0, self.P.size))
 
     def add_map(self, src_pid, dst_pid, scale):
         self.has_maps = True
@@ -462,5 +462,5 @@ class Core(object):
 
     def debug(self, msg):
         if self.debug_on:
-            print msg
+            print(msg)
 

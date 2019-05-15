@@ -29,11 +29,11 @@ class Metadata(object):
         return self.__dict__
     
     def set_dict(self, data):
-        for key, value in data.iteritems():
+        for key, value in data.items():
             self.__dict__[key] = value
             
     def save_pytables(self, node):
-        for key, value in self.iteritems():
+        for key, value in self.items():
             node._v_attrs[key] = value
             
     def load_pytables(self, node):
@@ -54,25 +54,25 @@ class Metadata(object):
         return self.__dict__[name]
     
     def keys(self):
-        return self.__dict__.keys()
+        return list(self.__dict__.keys())
     
     def has_key(self, name):
         return name in self.__dict__
     
     def values(self):
-        return self.__dict__.values()
+        return list(self.__dict__.values())
     
     def items(self):
-        return self.__dict__.items()
+        return list(self.__dict__.items())
     
     def iteritems(self):
-        return self.__dict__.iteritems()
+        return iter(self.__dict__.items())
     
     def iterkeys(self):
-        return self.__dict__.iterkeys()
+        return iter(self.__dict__.keys())
     
     def itervalues(self):
-        return self.__dict__.itervalues()
+        return iter(self.__dict__.values())
     
     def __contains__(self, name):
         return name in self.__dict__

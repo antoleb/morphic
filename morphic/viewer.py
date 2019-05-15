@@ -11,7 +11,7 @@ if not mlab_loaded :
     try:
         from enthought.mayavi import mlab
     except ImportError:
-        print 'Enthought Mayavi mlab module not found'
+        print('Enthought Mayavi mlab module not found')
         raise
 
 class Figure:
@@ -22,7 +22,7 @@ class Figure:
         
     def clear(self, label=None):
         if label == None:
-            labels = self.plots.keys()
+            labels = list(self.plots.keys())
         else:
             labels = [label]
             
@@ -45,11 +45,11 @@ class Figure:
         mlab.roll(camera[1])
 
     def hide(self, label):
-        if label in self.plots.keys():
+        if label in list(self.plots.keys()):
             self.plots[label].visible = False
 
     def show(self, label):
-        if label in self.plots.keys():
+        if label in list(self.plots.keys()):
             self.plots[label].visible = True
 
     def plot_surfaces(self, label, X, T, scalars=None, color=None, rep='surface', opacity=1.0):
@@ -263,7 +263,7 @@ class Figure:
                 obj.text = str(text[i])
                 obj.scale = scale
         else:
-            print "HELP, I shouldn\'t be here!!!!!"
+            print("HELP, I shouldn\'t be here!!!!!")
         
         self.figure.scene.disable_render = False
         mlab.view(*view)
@@ -351,22 +351,22 @@ class Figure:
                 valid_dicom = False
 
             if valid_dicom:
-                dcmtags = dcm.keys()
+                dcmtags = list(dcm.keys())
                 if slice_location_tag in dcmtags:
                     slice_location.append(float(dcm[slice_location_tag].value))
                 else:
-                    print 'No slice location found in ' + dicom_file
+                    print('No slice location found in ' + dicom_file)
                     return
                 if slice_thickness_tag in dcmtags:
                     slice_thickness.append(float(dcm[slice_thickness_tag].value))
                 else:
-                    print 'No slice thickness found in ' + dicom_file
+                    print('No slice thickness found in ' + dicom_file)
                     return
                 if image_position_tag in dcmtags:
                     image_position.append([float(v)
                         for v in dcm[image_position_tag].value])
                 else:
-                    print 'No image_position found in ' + dicom_file
+                    print('No image_position found in ' + dicom_file)
                     return
 
         # Remove files that are not dicoms
@@ -387,14 +387,14 @@ class Figure:
         dt = numpy.array(dt)
 
         if slice_thickness.std() > 1e-6 or dt.std() > 1e-6:
-            print 'Warning: slices are not regularly spaced'
+            print('Warning: slices are not regularly spaced')
 
         scan.set_slice_thickness(slice_thickness[0])
 
         if pixel_spacing_tag in dcmtags:
             scan.set_pixel_spacing(dcm[pixel_spacing_tag].value)
         else:
-            print 'No pixel spacing vlaues found in' + dicom_file
+            print('No pixel spacing vlaues found in' + dicom_file)
             return
 
         scan.set_origin(image_position.min(0))
@@ -402,12 +402,12 @@ class Figure:
         if rows_tag in dcmtags:
             rows = int(dcm[rows_tag].value)
         else:
-            print 'Number of rows not found in ' + dicom_file
+            print('Number of rows not found in ' + dicom_file)
             return
         if cols_tag in dcmtags:
             cols = int(dcm[cols_tag].value)
         else:
-            print 'Number of cols not found in ' + dicom_file
+            print('Number of cols not found in ' + dicom_file)
             return
 
         scan.init_values(rows, cols, slice_location.shape[0])

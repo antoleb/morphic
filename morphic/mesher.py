@@ -32,10 +32,10 @@ import numpy
 
 from scipy import linalg
 
-import core
-import discretizer
-import metadata
-import utils
+from . import core
+from . import discretizer
+from . import metadata
+from . import utils
 
 
 class Values(numpy.ndarray):
@@ -123,17 +123,17 @@ class Node(object):
 
     def _load_dict(self, node_dict):
         if node_dict['id'] != self.id:
-            raise 'Ids do not match'
+            raise Exeption('Ids do not match')
         self.fixed = node_dict['fixed']
         self.cids = node_dict['cids']
         self.num_values = node_dict['num_values']
         self.num_fields = node_dict['num_fields']
         self.num_components = node_dict['num_components']
-        if 'num_modes' in node_dict.keys():
+        if 'num_modes' in list(node_dict.keys()):
             self.num_modes = node_dict['num_modes']
         else:
             self.num_modes = 0
-        if 'shape' in node_dict.keys():
+        if 'shape' in list(node_dict.keys()):
             self.shape = node_dict['shape']
         else:
             self.shape = (self.num_fields, self.num_components)
@@ -254,7 +254,7 @@ class Node(object):
 
     def groups(self):
         groups = []
-        for group in self.mesh.nodes.groups.keys():
+        for group in list(self.mesh.nodes.groups.keys()):
             if self in self.mesh.nodes.groups[group]:
                 groups.append(group)
         return groups
@@ -263,7 +263,7 @@ class Node(object):
         if not isinstance(groups, list):
             groups = [groups]
         for group in groups:
-            if group in self.mesh.nodes.groups.keys() and self in self.mesh.nodes.groups[group]:
+            if group in list(self.mesh.nodes.groups.keys()) and self in self.mesh.nodes.groups[group]:
                 return True
         return False
 
@@ -427,7 +427,7 @@ class Element(object):
     def interp(self):
         import traceback
 
-        print 'Deprecated. Use \'basis\' instead'
+        print('Deprecated. Use \'basis\' instead')
         traceback.print_stack(file=sys.stdout)
         return self.basis
 
@@ -435,7 +435,7 @@ class Element(object):
     def interp(self, basis):
         import traceback
 
-        print 'Deprecated. Use \'basis\' instead'
+        print('Deprecated. Use \'basis\' instead')
         traceback.print_stack(file=sys.stdout)
         self._interp = basis
 
@@ -473,8 +473,8 @@ class Element(object):
 
     def _load_dict(self, elem_dict):
         if elem_dict['id'] != self.id:
-            raise 'Ids do not match'
-        if 'basis' in elem_dict.keys():
+            raise Exeption('Ids do not match')
+        if 'basis' in list(elem_dict.keys()):
             self._interp = elem_dict['basis']
             self.basis = elem_dict['basis']
         else:
@@ -543,7 +543,7 @@ class Element(object):
     def compute_weighted_sum(self, xi, field, deriv=None):
         rhs = 0
         weights = self.weights(xi, deriv)[0]
-        print 'w', weights
+        print(('w', weights))
         cids = self.core.EMap[self.cid]
         for idx, node in enumerate(self.nodes):
             if node._type == 'dependent':
@@ -552,7 +552,7 @@ class Element(object):
         return 1, 1, rhs
 
     def interpolate(self, xi, deriv=None):
-        print 'Interpolate deprecated. Use evaluate instead.'
+        print('Interpolate deprecated. Use evaluate instead.')
         return self.evaluate(xi, deriv=deriv)
 
     def evaluate(self, xi, deriv=None):
@@ -1076,12 +1076,12 @@ class Mesh(object):
     def groups(self, group_type=None):
         if group_type == None:
             return {
-                'nodes': [k for k in self.nodes.groups.keys()],
-                'elements': [k for k in self.nodes.groups.keys()]}
+                'nodes': [k for k in list(self.nodes.groups.keys())],
+                'elements': [k for k in list(self.nodes.groups.keys())]}
         elif group_type == 'nodes':
-            return {'nodes': [k for k in self.nodes.groups.keys()]}
+            return {'nodes': [k for k in list(self.nodes.groups.keys())]}
         elif group_type == 'elements':
-            return {'elements': [k for k in self.elements.groups.keys()]}
+            return {'elements': [k for k in list(self.elements.groups.keys())]}
 
         return None
 
@@ -1450,7 +1450,7 @@ class Mesh(object):
 
         # Save node groups
         h5groups = h5mesh.create_group('node_groups')
-        h5groups.attrs['size'] = len(self.nodes.groups.keys())
+        h5groups.attrs['size'] = len(list(self.nodes.groups.keys()))
         for gid, key in enumerate(self.nodes.groups.keys()):
             h5group = h5groups.create_group(str(gid))
             h5group.attrs['id'] = key
@@ -1460,7 +1460,7 @@ class Mesh(object):
 
         # Save element groups
         h5groups = h5mesh.create_group('element_groups')
-        h5groups.attrs['size'] = len(self.elements.groups.keys())
+        h5groups.attrs['size'] = len(list(self.elements.groups.keys()))
         for gid, key in enumerate(self.elements.groups.keys()):
             h5group = h5groups.create_group(str(gid))
             h5group.attrs['id'] = key
@@ -1474,7 +1474,7 @@ class Mesh(object):
         import h5py
 
         def get_attribute(h5node, key, default=None):
-            if key in h5node.attrs.keys():
+            if key in list(h5node.attrs.keys()):
                 return h5node.attrs[key]
             return default
 
@@ -1544,7 +1544,7 @@ class Mesh(object):
     def _load_dict(self, mesh_dict):
 
         def get_attribute(datadict, key, default=None):
-            if key in datadict.keys():
+            if key in list(datadict.keys()):
                 return datadict[key]
             return default
 
@@ -1552,7 +1552,7 @@ class Mesh(object):
         self.created_at = get_attribute(mesh_dict, 'created_at')
         self.saved_at = get_attribute(mesh_dict, 'saved_at')
         self.units = get_attribute(mesh_dict, 'units')
-        if mesh_dict.has_key('metadata'):
+        if 'metadata' in mesh_dict:
             self.metadata.set_dict(mesh_dict['metadata'])
         for node_dict in mesh_dict['nodes']:
             if node_dict['type'] == 'standard':
@@ -1569,9 +1569,9 @@ class Mesh(object):
             elem._load_dict(elem_dict)
         self._core.P = mesh_dict['values']
 
-        if 'node_objlist' in mesh_dict.keys():
+        if 'node_objlist' in list(mesh_dict.keys()):
             self.nodes._load_dict(mesh_dict['node_objlist'])
-        if 'element_objlist' in mesh_dict.keys():
+        if 'element_objlist' in list(mesh_dict.keys()):
             self.elements._load_dict(mesh_dict['element_objlist'])
 
     def generate(self, force=False):
@@ -1644,7 +1644,7 @@ class Mesh(object):
         self._core.update_params(param_ids, values)
 
     def interpolate(self, element_ids, xi, deriv=None):
-        print 'Interpolate deprecated. Use evaluate instead.'
+        print('Interpolate deprecated. Use evaluate instead.')
         return self.evaluate(element_ids, xi, deriv=deriv)
 
     def evaluate(self, element_ids, xi, deriv=None):
@@ -1912,7 +1912,7 @@ class Mesh(object):
     def get_lines(self, res=8, elements='all'):
         lines = []
         if elements == 'all':
-            elements = self.elements.keys()
+            elements = list(self.elements.keys())
         elif not isinstance(elements, list):
             elements = [elements]
 
@@ -1923,11 +1923,11 @@ class Mesh(object):
             node_ids = element.node_ids
             element_dimensions = len(element.basis)
             if element_dimensions == 1:
-                num_lines = range(1)
+                num_lines = list(range(1))
             elif element_dimensions == 2:
-                num_lines = range(4)
+                num_lines = list(range(4))
             elif element_dimensions == 3:
-                num_lines = range(12)
+                num_lines = list(range(12))
             line_index = []
             for lidx in num_lines:
                 enode = element_nodes[lidx]
@@ -2012,7 +2012,7 @@ class Mesh(object):
                 nids.append(node.id)
                 if isinstance(node, DepNode):
                     if node.element not in elements:
-                        print "Warning: Dependent node element is not included in the list of elements to copy"
+                        print("Warning: Dependent node element is not included in the list of elements to copy")
                     nids.append(node.node)
                 elif isinstance(node, PCANode):
                     if node.weights_id not in nids:
@@ -2063,7 +2063,7 @@ class Mesh(object):
         def process_nodes(elements_nids, precision, space):
             pids = []
             nodes_strs = []
-            for nid in self.nodes.keys():
+            for nid in list(self.nodes.keys()):
                 if nid in elements_nids:
                     node = self.nodes[nid]
                     nodes_strs.append(get_node_values_str(node, precision, space))
@@ -2088,7 +2088,7 @@ class Mesh(object):
 
         def process_elements(element_ids):
             elements_strs = []
-            for eid in self.elements.keys():
+            for eid in list(self.elements.keys()):
                 if eid in element_ids:
                     element = self.elements[eid]
                     elements_strs.append(get_element_str(element, space))
@@ -2096,7 +2096,7 @@ class Mesh(object):
 
         space = '\t'
         if element_ids == 'all':
-            element_ids = self.elements.keys()
+            element_ids = list(self.elements.keys())
         elements_node_ids = []
         for eid in element_ids:
             element = self.elements[eid]
@@ -2126,4 +2126,4 @@ class Mesh(object):
 
     def debug(self, msg):
         if self.debug_on:
-            print msg
+            print(msg)

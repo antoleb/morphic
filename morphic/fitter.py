@@ -46,7 +46,7 @@ class BoundElementPoint:
         self.num_elem_fields = len(self.param_ids)
         
         if self.fields == None:
-            self.fields = range(self.num_fields)
+            self.fields = list(range(self.num_fields))
         else:
             self.num_fields = len(self.fields)
         
@@ -205,7 +205,7 @@ class Fit:
             while label_not_in_data:
                 data_label = '_' + str(element_id) + '_' + \
                         str(int(1000000 + 1000000 * scipy.rand()))
-                if data_label not in self.data.keys():
+                if data_label not in list(self.data.keys()):
                     label_not_in_data = False
                     
             self.set_data(data_label, data)
@@ -300,11 +300,11 @@ class Fit:
         for point in self.points:
             if point._class_ == 'elem':
                 if point.data_index == None:
-                    if point.data not in num_rows.keys():
+                    if point.data not in list(num_rows.keys()):
                         num_rows[point.data] = 0
                     num_rows[point.data] += point.num_elem_fields
                     
-        for key in num_rows.keys():
+        for key in list(num_rows.keys()):
             self.data[key].init_phi(num_rows[key], self.num_dof)
         
         for point in self.points:
@@ -359,11 +359,11 @@ class Fit:
             ts += t2 - t1
             
         if output:
-            print 'Solve time: %4.2fs, (%4.2fs, %4.2fs)' % (ts+td, ts, td)
+            print('Solve time: %4.2fs, (%4.2fs, %4.2fs)' % (ts+td, ts, td))
             if rms_err0 < 1e-2:
-                print 'RMS err: %4.3e (iterations = %d)' % (rms_err0, niter)
+                print('RMS err: %4.3e (iterations = %d)' % (rms_err0, niter))
             else:
-                print 'RMS err: %4.3f (iterations = %d)' % (rms_err0, niter)
+                print('RMS err: %4.3f (iterations = %d)' % (rms_err0, niter))
         
         return mesh, rms_err0
     
@@ -391,7 +391,7 @@ class Fit:
         x, success = scipy.optimize.leastsq(self.objfn, x0,
                 args=[mesh, Xd, Td], ftol=ftol, xtol=xtol,
                 maxfev=maxiter)
-        if output: print 'Fit Time: ', time.time()-t0
+        if output: print('Fit Time: ', time.time()-t0)
         mesh.set_variables(x)
         return mesh
     
@@ -407,7 +407,7 @@ class Fit:
         x, success = scipy.optimize.leastsq(self.objective_function,
                 x0, args=[mesh, data], ftol=ftol, xtol=xtol, epsfcn=epsfcn, maxfev=maxiter)
                 
-        if output: print 'Fit Time: ', time.time()-t0
+        if output: print('Fit Time: ', time.time()-t0)
         mesh.set_variables(x)
         mesh.update()
         
@@ -428,7 +428,7 @@ class Fit:
         outputs = scipy.optimize.fmin_bfgs(self.objective_function,
                 x0, args=(mesh, data), gtol=ftol, maxiter=maxiter)
 
-        if output: print 'Fit Time: ', time.time()-t0
+        if output: print('Fit Time: ', time.time()-t0)
         mesh.set_variables(outputs[0])
         mesh.update()
 

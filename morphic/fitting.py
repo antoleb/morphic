@@ -61,13 +61,13 @@ class Fit():
             return self.points[key]
         
         def __iter__(self):
-            keys = self.points.keys()
+            keys = list(self.points.keys())
             keys.sort()
             for key in keys:
                 yield self.points[key]
         
         def __len__(self):
-            return len(self.points.keys())
+            return len(list(self.points.keys()))
     
     
     
@@ -125,13 +125,13 @@ class Fit():
             return self.points[key]
         
         def __iter__(self):
-            keys = self.points.keys()
+            keys = list(self.points.keys())
             keys.sort()
             for key in keys:
                 yield self.points[key]
         
         def __len__(self):
-            return len(self.points.keys())
+            return len(list(self.points.keys()))
     
     
     
@@ -181,13 +181,13 @@ class Fit():
             return self.points[key]
         
         def __iter__(self):
-            keys = self.points.keys()
+            keys = list(self.points.keys())
             keys.sort()
             for key in keys:
                 yield self.points[key]
         
         def __len__(self):
-            return len(self.points.keys())
+            return len(list(self.points.keys()))
     
     
     
@@ -396,13 +396,13 @@ class Fit():
             return self.nodes[key]
             
         def __iter__(self):
-            keys = self.nodes.keys()
+            keys = list(self.nodes.keys())
             keys.sort()
             for key in keys:
                 yield self.nodes[key]
         
         def __len__(self):
-            return len(self.nodes.keys())
+            return len(list(self.nodes.keys()))
             
     ####################################################################
     ####################################################################
@@ -580,7 +580,7 @@ class Fit():
         for np, point in enumerate(self.points):
             self.Xi.append(point.xi)
             el = point.element
-            if el not in self.ElementXiIndices.keys():
+            if el not in list(self.ElementXiIndices.keys()):
                 self.ElementXiIndices[el] = []
             self.ElementXiIndices[el].append(np)
         
@@ -696,7 +696,7 @@ class Fit():
         Xdr = self.get_data_for_solve(X=X)
         rms0 = self.rms_error(X)
         
-        for i in xrange(1,maxiter+1):
+        for i in range(1,maxiter+1):
             self.solve_iteration(Xdr)
             rms = self.rms_error()
             if output:
